@@ -8,7 +8,6 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.LiteralText;
 
 public class ModelerScreenHandler extends ScreenHandler {
 
@@ -21,12 +20,11 @@ public class ModelerScreenHandler extends ScreenHandler {
     public ModelerScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory) {
         super(Modeler.MODELER_HANDLER, syncId);
         ScreenHandler.checkSize(inventory, 1);
-
         this.inventory = inventory;
 
         inventory.onOpen(playerInventory.player);
 
-        this.addSlot(new Slot(this.inventory, 0, 62, 17));
+        this.addSlot(new Slot(this.inventory, 0, 45, 30));
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
@@ -48,7 +46,7 @@ public class ModelerScreenHandler extends ScreenHandler {
     public ItemStack transferSlot(PlayerEntity player, int index) {
         Slot clickedSlot = this.slots.get(index);
 
-        if (clickedSlot.hasStack() && clickedSlot.getIndex() == 0) {
+        if (clickedSlot.hasStack() && clickedSlot.id == 0) {
             ItemStack slotStack = clickedSlot.getStack();
 
             if (!this.insertItem(slotStack, 1, 37, false)) {
@@ -63,17 +61,19 @@ public class ModelerScreenHandler extends ScreenHandler {
                 this.slots.get(0).setStack(playerSlotStack.copy());
             } else {
                 if (ItemStack.canCombine(slotStack, playerSlotStack)) {
-                    byte newCount = (byte) (slotStack.getCount() + playerSlotStack.getCount());
+                    short newCount = (short) (slotStack.getCount() + playerSlotStack.getCount());
 
                     if (newCount > slotStack.getMaxCount()) {
                         slotStack.setCount(slotStack.getMaxCount());
+                        playerSlotStack.setCount(newCount - slotStack.getMaxCount());
 
-                        ItemStack playerStackCopy = playerSlotStack.copy();
-                        playerStackCopy.setCount(newCount - slotStack.getCount());
+                    } else {
+                        slotStack.setCount(newCount);
+                        playerSlotStack.setCount(newCount - slotStack.getCount());
 
-                        return playerStackCopy;
                     }
                 }
+                return ItemStack.EMPTY;
             }
 
             clickedSlot.setStack(ItemStack.EMPTY);
@@ -85,8 +85,6 @@ public class ModelerScreenHandler extends ScreenHandler {
 
     public void setCustomModelData(int customModelDataValue) {
         ItemStack stack = this.slots.get(0).getStack();
-
-        stack.setCustomName(new LiteralText(String.valueOf(customModelDataValue)));
         stack.getOrCreateNbt().putInt("CustomModelData", customModelDataValue);
     }
 

@@ -7,20 +7,21 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.model.json.ModelOverride;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 public class ModelerScreen extends HandledScreen<ModelerScreenHandler> {
 
     private TextFieldWidget textField;
-    private ButtonWidget applyButton;
+    private int wrongInputTicks;
 
     public ModelerScreen(ModelerScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
+        this.wrongInputTicks = 0;
     }
 
     @Override
@@ -40,13 +41,14 @@ public class ModelerScreen extends HandledScreen<ModelerScreenHandler> {
         super.init();
 
         this.titleX = (backgroundWidth - textRenderer.getWidth(this.title)) / 2;
-        int xPos = this.x;
-        int yPos = this.y;
+
+        int xPos = this.x + this.backgroundWidth / 2 + 5;
+        int yPos = this.y + 25;
         TextFieldWidget textField = new TextFieldWidget(this.textRenderer, xPos, yPos, 60, 20,
                 new LiteralText("Pog"));
         this.textField = this.addDrawableChild(textField);
 
-        this.applyButton = this.addDrawableChild(new ButtonWidget(xPos + 5, yPos + 30, 50, 20,
+        this.addDrawableChild(new ButtonWidget(xPos + 5, yPos + 30, 50, 20,
                 new LiteralText("Apply"), button -> {
             try {
                 int customModelDataValue = Integer.parseInt(this.textField.getText());
@@ -54,9 +56,25 @@ public class ModelerScreen extends HandledScreen<ModelerScreenHandler> {
                 buf.writeInt(customModelDataValue);
                 ClientPlayNetworking.send(Modeler.MODELER_CHANNEL, buf);
             } catch (NumberFormatException ignored) {
-
+                this.triggerWrongInputText();
             }
         }));
+    }
+
+    private void triggerWrongInputText() {
+        this.wrongInputTicks = 120;
+    }
+
+    @Override
+    protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
+        super.drawForeground(matrices, mouseX, mouseY);
+        if (this.wrongInputTicks != 0) {
+            this.textRenderer
+                    .draw(matrices, new TranslatableText("modeler.number_warning"), this.titleX, this.titleY - 20,
+                            0x4F4F4F);
+
+            this.wrongInputTicks--;
+        }
     }
 
 }
