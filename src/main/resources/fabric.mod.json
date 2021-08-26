@@ -1,0 +1,38 @@
+{
+    "schemaVersion": 1,
+    "id": "modeler",
+    "version": "${version}",
+
+    "name": "CustomModelDataAccessor",
+    "description": "Adds the ability to change custom model data without commands or datapacks.",
+    "authors": [
+        "0xJoeMama",
+        "KaloyanKYS",
+        "BrianComics",
+        "DigitalPear"
+    ],
+    "contact": {},
+
+    "license": "MIT",
+    "icon": "assets/modeler/icon.png",
+
+    "environment": "*",
+    "entrypoints": {
+        "client": [
+            "io.github.llamarama.team.modeler.client.ModelerClient"
+        ],
+        "main": [
+            "io.github.llamarama.team.modeler.Modeler"
+        ]
+    },
+
+    "mixins": [
+        "modeler.mixins.json"
+    ],
+
+    "depends": {
+        "fabricloader": ">=0.11.6",
+        "fabric": "*",
+        "minecraft": "1.17.1"
+    }
+}
