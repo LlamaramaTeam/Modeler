@@ -1,5 +1,6 @@
 package io.github.llamarama.team.modeler.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.llamarama.team.modeler.Modeler;
 import io.github.llamarama.team.modeler.common.screen_handler.ModelerScreenHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -7,17 +8,20 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 
 public class ModelerScreen extends HandledScreen<ModelerScreenHandler> {
 
     private TextFieldWidget textField;
     private int wrongInputTicks;
+    private static final Identifier TEXTURE = Modeler.id("textures/gui/modeler.png");
 
     public ModelerScreen(ModelerScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -33,7 +37,11 @@ public class ModelerScreen extends HandledScreen<ModelerScreenHandler> {
 
     @Override
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
+        RenderSystem.setShaderTexture(0, TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
 
+        this.drawTexture(matrices, this.x, this.y, 0, 0, 360, 228);
     }
 
     @Override
