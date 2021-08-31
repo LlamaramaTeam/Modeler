@@ -3,7 +3,7 @@
     "id": "modeler",
     "version": "${version}",
 
-    "name": "CustomModelDataAccessor",
+    "name": "Modeler",
     "description": "Adds the ability to change custom model data without commands or datapacks.",
     "authors": [
         "0xJoeMama",
