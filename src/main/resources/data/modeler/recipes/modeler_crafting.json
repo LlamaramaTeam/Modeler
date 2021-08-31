@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " _ ",
+        "WWW",
+        "iWi"
+    ],
+    "key": {
+        "_": {
+            "item": "minecraft:warped_slab"
+        },
+        "W": {
+            "item": "minecraft:warped_planks"
+        },
+        "i": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "result": {
+        "item": "modeler:modeler",
+        "count": 1
+    },
+    "group": "building_blocks"
+}
