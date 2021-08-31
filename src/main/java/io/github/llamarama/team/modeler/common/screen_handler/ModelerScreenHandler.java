@@ -24,7 +24,7 @@ public class ModelerScreenHandler extends ScreenHandler {
 
         inventory.onOpen(playerInventory.player);
 
-        this.addSlot(new Slot(this.inventory, 0, 45, 30));
+        this.addSlot(new Slot(this.inventory, 0, 43, 32));
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
@@ -85,7 +85,10 @@ public class ModelerScreenHandler extends ScreenHandler {
 
     public void setCustomModelData(int customModelDataValue) {
         ItemStack stack = this.slots.get(0).getStack();
-        stack.getOrCreateNbt().putInt("CustomModelData", customModelDataValue);
+
+        if (!stack.isEmpty()) {
+            stack.getOrCreateNbt().putInt("CustomModelData", customModelDataValue);
+        }
     }
 
 }

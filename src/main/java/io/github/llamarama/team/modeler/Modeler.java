@@ -11,6 +11,9 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -37,6 +40,9 @@ public class Modeler implements ModInitializer {
     public void onInitialize() {
         Registry.register(Registry.BLOCK, id("modeler"), MODELER);
         Registry.register(Registry.BLOCK_ENTITY_TYPE, id("modeler"), MODELER_BE);
+        Registry.register(Registry.ITEM, id("modeler"),
+                new BlockItem(MODELER, new Item.Settings().group(ItemGroup.DECORATIONS))
+        );
 
         ServerPlayNetworking.registerGlobalReceiver(MODELER_CHANNEL, (server, player, handler, buf, responseSender) -> {
             int modelDataValue = buf.readInt();

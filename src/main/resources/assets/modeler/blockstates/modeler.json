@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "": {
+            "model": "modeler:block/modeler"
+        }
+    }
+}

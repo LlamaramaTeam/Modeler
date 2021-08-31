@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketByteBuf;
@@ -19,9 +20,10 @@ import net.minecraft.util.Identifier;
 
 public class ModelerScreen extends HandledScreen<ModelerScreenHandler> {
 
+    private static final Identifier TEXTURE = Modeler.id("textures/gui/modeler.png");
+    private static final TranslatableText NUMBER_WARNING_MSG = new TranslatableText("modeler.number_warning");
     private TextFieldWidget textField;
     private int wrongInputTicks;
-    private static final Identifier TEXTURE = Modeler.id("textures/gui/modeler.png");
 
     public ModelerScreen(ModelerScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -36,12 +38,27 @@ public class ModelerScreen extends HandledScreen<ModelerScreenHandler> {
     }
 
     @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == InputUtil.GLFW_KEY_ESCAPE) {
+            if (this.client != null && this.client.player != null) {
+                this.client.player.closeHandledScreen();
+            }
+        }
+
+        if (this.textField.isActive()) {
+            return this.textField.keyPressed(keyCode, scanCode, modifiers);
+        } else {
+            return super.keyPressed(keyCode, scanCode, modifiers);
+        }
+    }
+
+    @Override
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        this.drawTexture(matrices, this.x, this.y, 0, 0, 360, 228);
+        this.drawTexture(matrices, this.x, this.y, 0, 0, 256, 256);
     }
 
     @Override
@@ -59,30 +76,37 @@ public class ModelerScreen extends HandledScreen<ModelerScreenHandler> {
         this.addDrawableChild(new ButtonWidget(xPos + 5, yPos + 30, 50, 20,
                 new LiteralText("Apply"), button -> {
             try {
-                int customModelDataValue = Integer.parseInt(this.textField.getText());
-                PacketByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(customModelDataValue);
-                ClientPlayNetworking.send(Modeler.MODELER_CHANNEL, buf);
+                if (this.client != null) {
+                    this.client.execute(() -> {
+                        int customModelDataValue = Integer.parseInt(this.textField.getText());
+                        PacketByteBuf buf = PacketByteBufs.create();
+                        buf.writeInt(customModelDataValue);
+                        ClientPlayNetworking.send(Modeler.MODELER_CHANNEL, buf);
+                    });
+                }
             } catch (NumberFormatException ignored) {
                 this.triggerWrongInputText();
             }
         }));
-    }
 
-    private void triggerWrongInputText() {
-        this.wrongInputTicks = 120;
+        this.textField.active = true;
     }
 
     @Override
     protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
         super.drawForeground(matrices, mouseX, mouseY);
         if (this.wrongInputTicks != 0) {
-            this.textRenderer
-                    .draw(matrices, new TranslatableText("modeler.number_warning"), this.titleX, this.titleY - 20,
-                            0x4F4F4F);
+            int width = this.textRenderer.getWidth(NUMBER_WARNING_MSG);
+            this.textRenderer.draw(matrices, NUMBER_WARNING_MSG,
+                    this.backgroundWidth / 2f - width / 2f,
+                    this.titleY - 20, 0x4F4F4F);
 
             this.wrongInputTicks--;
         }
+    }
+
+    private void triggerWrongInputText() {
+        this.wrongInputTicks = 120;
     }
 
 }
