@@ -13,15 +13,13 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class ModelerScreen extends HandledScreen<ModelerScreenHandler> {
 
     private static final Identifier TEXTURE = Modeler.id("textures/gui/modeler.png");
-    private static final TranslatableText NUMBER_WARNING_MSG = new TranslatableText("modeler.number_warning");
+    private static final Text NUMBER_WARNING_MSG = Text.translatable("modeler.number_warning");
     private TextFieldWidget textField;
     private int wrongInputTicks;
 
@@ -69,12 +67,11 @@ public class ModelerScreen extends HandledScreen<ModelerScreenHandler> {
 
         int xPos = this.x + this.backgroundWidth / 2 + 5;
         int yPos = this.y + 25;
-        TextFieldWidget textField = new TextFieldWidget(this.textRenderer, xPos, yPos, 60, 20,
-                new LiteralText("Pog"));
+        TextFieldWidget textField = new TextFieldWidget(this.textRenderer, xPos, yPos, 60, 20, Text.empty());
         this.textField = this.addDrawableChild(textField);
 
         this.addDrawableChild(new ButtonWidget(xPos + 5, yPos + 30, 50, 20,
-                new LiteralText("Apply"), button -> {
+                Text.literal("Apply"), button -> {
             try {
                 if (this.client != null) {
                     this.client.execute(() -> {
