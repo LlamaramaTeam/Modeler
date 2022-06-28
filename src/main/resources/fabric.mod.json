@@ -14,7 +14,6 @@
     "contact": {},
 
     "license": "MIT",
-    "icon": "assets/modeler/icon.png",
 
     "environment": "*",
     "entrypoints": {
@@ -26,14 +25,10 @@
         ]
     },
 
-    "mixins": [
-        "modeler.mixins.json"
-    ],
-
     "depends": {
         "fabricloader": ">=0.11.6",
         "fabric": "*",
-        "minecraft": "1.17.1",
-        "java": ">=16"
+        "minecraft": "1.19.x",
+        "java": ">=17"
     }
 }

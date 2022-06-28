@@ -29,8 +29,9 @@ public class ModelerBlock extends BlockWithEntity {
         if (!world.isClient) {
             NamedScreenHandlerFactory factory = state.createScreenHandlerFactory(world, pos);
 
-            if (factory != null)
+            if (factory != null) {
                 player.openHandledScreen(factory);
+            }
         }
 
         return ActionResult.SUCCESS;

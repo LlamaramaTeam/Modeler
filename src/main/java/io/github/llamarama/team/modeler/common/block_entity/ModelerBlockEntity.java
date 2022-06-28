@@ -13,7 +13,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -29,7 +28,7 @@ public class ModelerBlockEntity extends BlockEntity implements NamedScreenHandle
 
     @Override
     public Text getDisplayName() {
-        return new TranslatableText("modeler.modeler_name");
+        return Text.translatable("modeler.modeler_name");
     }
 
     @Nullable
@@ -37,7 +36,6 @@ public class ModelerBlockEntity extends BlockEntity implements NamedScreenHandle
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
         return new ModelerScreenHandler(syncId, inv, this);
     }
-
 
     @Override
     public int size() {
@@ -92,9 +90,9 @@ public class ModelerBlockEntity extends BlockEntity implements NamedScreenHandle
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
+    public void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
-        return Inventories.writeNbt(nbt, this.items);
+        Inventories.writeNbt(nbt, this.items);
     }
 
     @Override
